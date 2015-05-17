@@ -2,10 +2,11 @@
 #title           :pcurl.sh
 #description     :This script will download a file in segments.
 #author		 :Phil Rumble prumble@au1.ibm.com
-#date            :20120202
-#version         :0.1    
+#date            :20150517
+#version         :0.2
 #usage		 :bash pcurl.sh url
 #notes           :Install curl to use this script.
+#fixes           : v0.2 by Bruno Borges = added -L on curl calls to follow 302 redirs
 
 
 debug() { echo "DEBUG: $*" >&2; }
@@ -49,7 +50,7 @@ echo "Downloading ${URL}"
 #echo ${FILESIZE}
 
 FILESIZE_TXT="./FILESIZE.txt"
-curl -s -I ${URL} > ${FILESIZE_TXT}
+curl -s -L -I ${URL} > ${FILESIZE_TXT}
 i="0"
 
 FILESIZE="0"
@@ -91,10 +92,10 @@ for i in $(eval echo {1..${MAX_SEGMENTS}})
 do
 	if [ "$i" !=  "$MAX_SEGMENT" ]
 	then 
-		curl -s --range ${START_SEG}-${END_SEG} -o ${FILENAME}.part${i} ${URL} &
+		curl -s -L --range ${START_SEG}-${END_SEG} -o ${FILENAME}.part${i} ${URL} &
 		pids="$pids $!"
 	else
-		curl -s --range ${START_SEG}- -o ${FILENAME}.part${i} ${URL} &
+		curl -s -L --range ${START_SEG}- -o ${FILENAME}.part${i} ${URL} &
 		pids="$pids $!"
 	fi
 	echo "Start = ${START_SEG}"
