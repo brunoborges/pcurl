@@ -90,7 +90,7 @@ END_SEG=${SEGMENT_SIZE}
 pids=""
 for i in $(eval echo {1..${MAX_SEGMENTS}})
 do
-	if [ "$i" !=  "$MAX_SEGMENT" ]
+	if [ "$i" !=  "$MAX_SEGMENTS" ]
 	then 
 		curl -s -L --range ${START_SEG}-${END_SEG} -o ${FILENAME}.part${i} ${URL} &
 		pids="$pids $!"
